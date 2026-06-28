@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
-using WindSim.Models;
+using RobsWindSim.Models;
 
-namespace WindSim.Native;
+namespace RobsWindSim.Native;
 
 public sealed class GlobalHotkeys : NativeWindow, IDisposable
 {

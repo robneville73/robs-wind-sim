@@ -1,7 +1,7 @@
-using WindSim.Models;
-using WindSim.Services;
+using RobsWindSim.Models;
+using RobsWindSim.Services;
 
-namespace WindSim.Forms;
+namespace RobsWindSim.Forms;
 
 public sealed class SettingsForm : Form
 {

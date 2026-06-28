@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
 
-namespace WindSim.Models;
+namespace RobsWindSim.Models;
 
 public enum CurveType
 {
@@ -62,15 +62,23 @@ public sealed class AppSettings
     public HotkeyBinding IdleUpHotkey { get; set; } = new() { Key = Keys.F10 };
     public HotkeyBinding IdleDownHotkey { get; set; } = new() { Key = Keys.F11 };
 
+    private const string SettingsFolderName = "RobsWindSim";
+
     [JsonIgnore]
     public static string SettingsPath =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "WindSim",
+            SettingsFolderName,
             "settings.json");
 
-    private static string LegacySettingsPath =>
+    private static string LegacyExeSettingsPath =>
         Path.Combine(AppContext.BaseDirectory, "settings.json");
+
+    private static string LegacyAppDataSettingsPath =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "WindSim",
+            "settings.json");
 
     public static AppSettings Load()
     {
@@ -110,13 +118,22 @@ public sealed class AppSettings
 
     private static void MigrateLegacySettingsIfNeeded()
     {
-        if (File.Exists(SettingsPath) || !File.Exists(LegacySettingsPath))
+        if (File.Exists(SettingsPath))
+            return;
+
+        var legacyPath = File.Exists(LegacyAppDataSettingsPath)
+            ? LegacyAppDataSettingsPath
+            : File.Exists(LegacyExeSettingsPath)
+                ? LegacyExeSettingsPath
+                : null;
+
+        if (legacyPath is null)
             return;
 
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
-            File.Copy(LegacySettingsPath, SettingsPath);
+            File.Copy(legacyPath, SettingsPath);
         }
         catch
         {

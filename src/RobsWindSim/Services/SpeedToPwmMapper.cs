@@ -1,6 +1,6 @@
-using WindSim.Models;
+using RobsWindSim.Models;
 
-namespace WindSim.Services;
+namespace RobsWindSim.Services;
 
 public static class SpeedToPwmMapper
 {

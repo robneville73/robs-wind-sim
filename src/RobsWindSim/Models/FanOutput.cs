@@ -1,4 +1,4 @@
-namespace WindSim.Models;
+namespace RobsWindSim.Models;
 
 public readonly struct FanOutput
 {

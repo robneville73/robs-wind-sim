@@ -1,4 +1,4 @@
-namespace WindSim.Services;
+namespace RobsWindSim.Services;
 
 public sealed class ManualTestSpeedSource : ISpeedSource
 {

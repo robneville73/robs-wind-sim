@@ -1,4 +1,4 @@
-namespace WindSim.Services;
+namespace RobsWindSim.Services;
 
 public interface ISpeedSource
 {

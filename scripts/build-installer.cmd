@@ -3,14 +3,14 @@ setlocal enabledelayedexpansion
 
 cd /d "%~dp0\.."
 
-echo Publishing WindSim...
+echo Publishing Robs Wind Sim...
 call "%~dp0publish.cmd"
 if errorlevel 1 exit /b 1
 
-for /f "usebackq delims=" %%V in (`powershell -NoProfile -Command "(Select-Xml -Path 'src\WindSim\WindSim.csproj' -XPath '//Version').Node.InnerText"`) do set VERSION=%%V
+for /f "usebackq delims=" %%V in (`powershell -NoProfile -Command "(Select-Xml -Path 'src\RobsWindSim\RobsWindSim.csproj' -XPath '//Version').Node.InnerText"`) do set VERSION=%%V
 
 if not defined VERSION (
-    echo Could not read Version from WindSim.csproj
+    echo Could not read Version from RobsWindSim.csproj
     exit /b 1
 )
 
@@ -29,7 +29,7 @@ if not defined ISCC (
 if not exist artifacts mkdir artifacts
 
 echo Building installer v%VERSION%...
-"%ISCC%" /DMyAppVersion=%VERSION% installer\WindSim.iss
+"%ISCC%" /DMyAppVersion=%VERSION% installer\RobsWindSim.iss
 if errorlevel 1 exit /b 1
 
 echo.

@@ -2,12 +2,12 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using WindSim.Forms;
-using WindSim.Models;
-using WindSim.Native;
-using WindSim.Services;
+using RobsWindSim.Forms;
+using RobsWindSim.Models;
+using RobsWindSim.Native;
+using RobsWindSim.Services;
 
-namespace WindSim;
+namespace RobsWindSim;
 
 public enum TrayConnectionState
 {

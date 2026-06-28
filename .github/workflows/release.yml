@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g. 1.0.1)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -22,24 +28,40 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Publish
-        run: dotnet publish src/WindSim/WindSim.csproj -p:PublishProfile=win-x64
+        run: dotnet publish src/RobsWindSim/RobsWindSim.csproj -p:PublishProfile=win-x64
 
-      - name: Read version from tag
+      - name: Resolve version
         id: version
         shell: pwsh
         run: |
-          $tag = "${{ github.ref_name }}"
-          $version = $tag -replace '^v', ''
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $version = "${{ inputs.version }}"
+          } else {
+            $version = "${{ github.ref_name }}" -replace '^v', ''
+          }
+          if ([string]::IsNullOrWhiteSpace($version)) {
+            throw "Version could not be resolved."
+          }
           echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "tag=v$version" >> $env:GITHUB_OUTPUT
 
       - name: Build installer
         uses: Minionguyjpro/Inno-Setup-Action@v1.2.7
         with:
-          path: installer/WindSim.iss
+          path: installer/RobsWindSim.iss
           options: /DMyAppVersion=${{ steps.version.outputs.version }}
+
+      - name: Verify installer artifact
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem -Path artifacts -Filter "RobsWindSim-Setup-${{ steps.version.outputs.version }}.exe" -ErrorAction Stop
+          Write-Host "Built installer: $($installer.FullName) ($([math]::Round($installer.Length / 1MB, 1)) MB)"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/RobsWindSim-Setup-*.exe
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Robs Wind Sim ${{ steps.version.outputs.version }}
+          files: artifacts/RobsWindSim-Setup-${{ steps.version.outputs.version }}.exe
           generate_release_notes: true
+          fail_on_unmatched_files: true

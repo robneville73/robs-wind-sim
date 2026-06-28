@@ -50,7 +50,7 @@ scripts\dev.cmd
 Or directly:
 
 ```bash
-dotnet run --project src/WindSim/WindSim.csproj -c Release
+dotnet run --project src/RobsWindSim/RobsWindSim.csproj -c Release
 ```
 
 Day-to-day dev uses the installed .NET runtime — no hundreds of loose DLLs in `bin/`.
@@ -64,16 +64,16 @@ scripts\publish.cmd
 Or directly:
 
 ```bash
-dotnet publish src/WindSim/WindSim.csproj -p:PublishProfile=win-x64
+dotnet publish src/RobsWindSim/RobsWindSim.csproj -p:PublishProfile=win-x64
 ```
 
-Output: `src/WindSim/bin/Release/net10.0-windows/win-x64/publish/WindSim.exe` (single self-contained file).
+Output: `src/RobsWindSim/bin/Release/net10.0-windows/win-x64/publish/RobsWindSim.exe` (single self-contained file).
 
-Settings are saved to `%LocalAppData%\WindSim\settings.json`. If you previously ran a portable copy with `settings.json` beside the exe, settings are migrated automatically on first launch.
+Settings are saved to `%LocalAppData%\RobsWindSim\settings.json`. Older settings under `%LocalAppData%\WindSim` or beside the exe are migrated automatically on first launch.
 
 ### Install (end users)
 
-Download **RobsWindSim-Setup-x.y.z.exe** from [GitHub Releases](https://github.com/robneville73/robs-wind-sim/releases), run the installer, and launch **Robs Wind Sim** from the Start Menu.
+Download **RobsWindSim-Setup-x.y.z.exe** from [GitHub Releases](https://github.com/robneville73/robs-wind-sim/releases/latest), run the installer, and launch **Robs Wind Sim** from the Start Menu.
 
 Windows may show a SmartScreen warning because the installer is not code-signed. Choose **More info** → **Run anyway** to proceed.
 
@@ -88,20 +88,20 @@ Prerequisites:
 scripts\build-installer.cmd
 ```
 
-Output: `artifacts\RobsWindSim-Setup-{version}.exe` (version read from `src/WindSim/WindSim.csproj`).
+Output: `artifacts\RobsWindSim-Setup-{version}.exe` (version read from `src/RobsWindSim/RobsWindSim.csproj`).
 
 ### Releasing
 
-1. Bump `<Version>` in [src/WindSim/WindSim.csproj](src/WindSim/WindSim.csproj).
+1. Bump `<Version>` in [src/RobsWindSim/RobsWindSim.csproj](src/RobsWindSim/RobsWindSim.csproj).
 2. Commit and push to `main`.
-3. Tag and push:
+3. Tag and push (or use **Actions → Release → Run workflow**):
 
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
+git tag v1.0.1
+git push origin v1.0.1
 ```
 
-GitHub Actions builds the installer and attaches it to a new [Release](https://github.com/robneville73/robs-wind-sim/releases).
+GitHub Actions builds the installer and attaches it to a new [Release](https://github.com/robneville73/robs-wind-sim/releases). Check the **Actions** tab if a release does not appear within a few minutes.
 
 ### Tray behavior
 
@@ -116,7 +116,7 @@ Default global hotkeys: **F9** (master toggle), **F10** (idle up), **F11** (idle
 ## Phase 1 Testing
 
 1. Flash the Arduino sketch.
-2. Launch `WindSim.exe` (or `dotnet run`).
+2. Launch `RobsWindSim.exe` (or `dotnet run`).
 3. Open **Settings**, select the Arduino COM port, click **Refresh** if needed.
 4. Confirm **Arduino: Connected** when the port is correct.
 5. Enable **Test Mode**, move the speed slider — fans should track mapped output.

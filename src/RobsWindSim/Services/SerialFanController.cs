@@ -1,7 +1,7 @@
 using System.IO.Ports;
-using WindSim.Models;
+using RobsWindSim.Models;
 
-namespace WindSim.Services;
+namespace RobsWindSim.Services;
 
 public sealed class SerialFanController : IDisposable
 {

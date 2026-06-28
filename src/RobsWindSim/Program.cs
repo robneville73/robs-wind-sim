@@ -1,6 +1,6 @@
-using WindSim.Models;
+using RobsWindSim.Models;
 
-namespace WindSim;
+namespace RobsWindSim;
 
 static class Program
 {

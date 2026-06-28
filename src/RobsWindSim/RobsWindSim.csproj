@@ -6,13 +6,14 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>WindSim</RootNamespace>
-    <AssemblyName>WindSim</AssemblyName>
+    <RootNamespace>RobsWindSim</RootNamespace>
+    <AssemblyName>RobsWindSim</AssemblyName>
     <Product>Robs Wind Sim</Product>
     <AssemblyTitle>Robs Wind Sim</AssemblyTitle>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Company>Rob Neville</Company>
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>1.0.0.1</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>

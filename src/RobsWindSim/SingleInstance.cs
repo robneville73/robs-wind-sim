@@ -1,4 +1,4 @@
-namespace WindSim;
+namespace RobsWindSim;
 
 internal static class SingleInstance
 {
@@ -56,7 +56,7 @@ internal static class SingleInstance
             })
             {
                 IsBackground = true,
-                Name = "WindSim-ActivateListener"
+                Name = "RobsWindSim-ActivateListener"
             };
             _thread.Start();
         }

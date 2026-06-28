@@ -3,11 +3,11 @@
 #endif
 
 #ifndef PublishDir
-  #define PublishDir "..\src\WindSim\bin\Release\net10.0-windows\win-x64\publish"
+  #define PublishDir "..\src\RobsWindSim\bin\Release\net10.0-windows\win-x64\publish"
 #endif
 
 #define MyAppName "Robs Wind Sim"
-#define MyAppExeName "WindSim.exe"
+#define MyAppExeName "RobsWindSim.exe"
 #define MyAppPublisher "Rob Neville"
 
 [Setup]
