@@ -55,7 +55,8 @@ public sealed class AppSettings
     public bool SyncChannels { get; set; } = true;
     public double IdleSpeedPercent { get; set; } = 17;
     public double IdleStepPercent { get; set; } = 5;
-    public bool TestModeEnabled { get; set; } = true;
+    public bool TestModeEnabled { get; set; }
+    public bool ReplayModeEnabled { get; set; }
     public double TestSpeedMph { get; set; }
     public bool MasterEnabled { get; set; } = true;
     public HotkeyBinding MasterToggleHotkey { get; set; } = new() { Key = Keys.F9 };

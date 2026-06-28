@@ -20,7 +20,7 @@ public sealed class AppTrayContext : ApplicationContext
 {
     private readonly AppSettings _settings;
     private readonly ManualTestSpeedSource _manualSource = new();
-    private readonly IracingSpeedSource _iracingSource = new();
+    private readonly IracingSpeedSource _iracingSource;
     private readonly SerialFanController _serial = new();
     private readonly GlobalHotkeys _hotkeys;
     private readonly Form _hostForm;
@@ -36,6 +36,7 @@ public sealed class AppTrayContext : ApplicationContext
     public AppTrayContext(AppSettings settings)
     {
         _settings = settings;
+        _iracingSource = new IracingSpeedSource(_settings);
         _manualSource.SetTestSpeed(_settings.TestSpeedMph);
 
         _hostForm = new Form
@@ -78,6 +79,8 @@ public sealed class AppTrayContext : ApplicationContext
         _notifyIcon.DoubleClick += (_, _) => ShowSettings();
 
         _serial.ConfigurePort(_settings.ComPort);
+
+        _iracingSource.Start();
 
         _loopTimer = new System.Windows.Forms.Timer { Interval = 50 };
         _loopTimer.Tick += (_, _) => OnLoopTick();
@@ -219,6 +222,7 @@ public sealed class AppTrayContext : ApplicationContext
         _notifyIcon.Dispose();
         _hotkeys.Dispose();
         _serial.Dispose();
+        _iracingSource.Dispose();
         _hostForm.Close();
         ExitThread();
     }
@@ -232,6 +236,7 @@ public sealed class AppTrayContext : ApplicationContext
             _notifyIcon.Dispose();
             _hotkeys.Dispose();
             _serial.Dispose();
+            _iracingSource.Dispose();
             _hostForm.Dispose();
         }
 

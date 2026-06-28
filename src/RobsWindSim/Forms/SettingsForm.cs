@@ -22,6 +22,7 @@ public sealed class SettingsForm : Form
     private Label _leftMaxPowerLabel = null!;
     private Label _rightMaxPowerLabel = null!;
     private CheckBox _syncChannelsCheck = null!;
+    private CheckBox _replayModeCheck = null!;
     private TrackBar _idleSpeedSlider = null!;
     private Label _idleSpeedLabel = null!;
     private NumericUpDown _idleStepInput = null!;
@@ -66,6 +67,7 @@ public sealed class SettingsForm : Form
             _leftMaxPowerSlider.Value = (int)Math.Clamp(settings.LeftMaxPowerPercent, 0, 100);
             _rightMaxPowerSlider.Value = (int)Math.Clamp(settings.RightMaxPowerPercent, 0, 100);
             _syncChannelsCheck.Checked = settings.SyncChannels;
+            _replayModeCheck.Checked = settings.ReplayModeEnabled;
             _idleSpeedSlider.Value = (int)Math.Clamp(settings.IdleSpeedPercent, 0, 100);
             _idleStepInput.Value = Math.Clamp((decimal)settings.IdleStepPercent, _idleStepInput.Minimum, _idleStepInput.Maximum);
             _testModeCheck.Checked = settings.TestModeEnabled;
@@ -280,23 +282,27 @@ public sealed class SettingsForm : Form
 
         var mapping = CreateMappingSection();
         var channels = CreateChannelsSection();
+        var iracing = CreateIracingSection();
         var idle = CreateIdleSection();
 
         const int sectionWidth = 472;
         mapping.SetBounds(0, 0, sectionWidth, mapping.Height);
         channels.SetBounds(0, mapping.Bottom + 8, sectionWidth, channels.Height);
-        idle.SetBounds(0, channels.Bottom + 8, sectionWidth, idle.Height);
+        iracing.SetBounds(0, channels.Bottom + 8, sectionWidth, iracing.Height);
+        idle.SetBounds(0, iracing.Bottom + 8, sectionWidth, idle.Height);
 
-        scroll.Controls.AddRange([mapping, channels, idle]);
+        scroll.Controls.AddRange([mapping, channels, iracing, idle]);
         scroll.AutoScrollMinSize = new Size(0, idle.Bottom + 16);
         scroll.Resize += (_, _) =>
         {
             var width = Math.Max(200, scroll.ClientSize.Width - 24);
             mapping.Width = width;
             channels.Width = width;
+            iracing.Width = width;
             idle.Width = width;
             channels.Top = mapping.Bottom + 8;
-            idle.Top = channels.Bottom + 8;
+            iracing.Top = channels.Bottom + 8;
+            idle.Top = iracing.Bottom + 8;
         };
 
         page.Controls.Add(scroll);
@@ -416,6 +422,25 @@ public sealed class SettingsForm : Form
             _leftMaxPowerPanel, _rightMaxPowerPanel
         ]);
         return _channelsGroup;
+    }
+
+    private GroupBox CreateIracingSection()
+    {
+        var group = CreateSectionGroup("iRacing", 72);
+
+        _replayModeCheck = new CheckBox
+        {
+            Text = "Replay mode",
+            AutoSize = true,
+            Location = new Point(12, 24)
+        };
+        _replayModeCheck.CheckedChanged += (_, _) => PersistSettings();
+
+        SetTip(_replayModeCheck,
+            "When enabled, fan output follows replay telemetry. When disabled (default), only live driving sessions drive the fans; replays hold idle speed.");
+
+        group.Controls.Add(_replayModeCheck);
+        return group;
     }
 
     private GroupBox CreateIdleSection()
@@ -681,6 +706,7 @@ public sealed class SettingsForm : Form
             ? _leftMaxPowerSlider.Value
             : _rightMaxPowerSlider.Value;
         settings.SyncChannels = _syncChannelsCheck.Checked;
+        settings.ReplayModeEnabled = _replayModeCheck.Checked;
         settings.IdleSpeedPercent = _idleSpeedSlider.Value;
         settings.IdleStepPercent = (double)_idleStepInput.Value;
         settings.TestModeEnabled = _testModeCheck.Checked;
@@ -742,13 +768,30 @@ public sealed class SettingsForm : Form
             ? $"Arduino: Connected ({_app.Serial.ConfiguredPort})"
             : $"Arduino: Disconnected{(string.IsNullOrWhiteSpace(_app.Settings.ComPort) ? "" : $" ({_app.Settings.ComPort})")}";
 
-        _iracingStatusLabel.Text = _app.IracingSource.IsConnected
-            ? "iRacing: Connected"
-            : "iRacing: Not connected (phase 2)";
+        _iracingStatusLabel.Text = FormatIracingStatus();
 
         _masterStatusLabel.Text = _app.Settings.MasterEnabled
             ? "Master output: On"
             : "Master output: Off";
+    }
+
+    private string FormatIracingStatus()
+    {
+        var source = _app.IracingSource;
+
+        if (!source.IsConnected)
+            return "iRacing: Waiting for sim";
+
+        if (!source.IsLiveSession && !_app.Settings.ReplayModeEnabled)
+            return "iRacing: Connected (replay)";
+
+        if (!source.IsLiveSession)
+            return $"iRacing: Connected (replay) — {source.CurrentSpeedMph:F0} mph";
+
+        if (_app.Settings.TestModeEnabled)
+            return $"iRacing: Connected — {source.CurrentSpeedMph:F0} mph (test mode active)";
+
+        return $"iRacing: Connected — {source.CurrentSpeedMph:F0} mph";
     }
 
     private void UpdateHotkeyButtons()

@@ -1,6 +1,6 @@
 # Robs Wind Sim
 
-Windows tray application that drives two PWM fan channels on an Arduino Nano for a DIY sim racing wind simulator. Phase 1 provides manual test mode and serial control; iRacing telemetry integration is planned for phase 2.
+Windows tray application that drives two PWM fan channels on an Arduino Nano for a DIY sim racing wind simulator. Reads live speed from iRacing telemetry (or manual test mode) and maps it to fan PWM output.
 
 ## Hardware
 
@@ -34,12 +34,25 @@ You can bench-test with the Arduino Serial Monitor: set line ending to Newline, 
 3. Processor: **ATmega328P** — pick Old or New Bootloader to match your board.
 4. Upload.
 
+## iRacing Setup
+
+No separate iRacing SDK install is required. The app uses [IRSDKSharper](https://github.com/mherbold/IRSDKSharper) (GPL-3.0) to read shared-memory telemetry while iRacing is running.
+
+Enable memory-based telemetry in iRacing's `app.ini` (typically under `Documents\iRacing\app.ini`):
+
+```ini
+irsdkEnableMem=1
+```
+
+Restart iRacing after changing this setting. With Test Mode off (the default), the app reads live `Speed` telemetry at ~30 Hz and converts m/s to mph for fan mapping.
+
 ## Windows App
 
 ### Requirements
 
 - .NET 10 SDK
 - Windows x64
+- iRacing with `irsdkEnableMem=1` (for live mode)
 
 ### Run from source
 
@@ -97,8 +110,8 @@ Output: `artifacts\RobsWindSim-Setup-{version}.exe` (version read from `src/Robs
 3. Tag and push (or use **Actions → Release → Run workflow**):
 
 ```bash
-git tag v1.0.1
-git push origin v1.0.1
+git tag v1.1.0
+git push origin v1.1.0
 ```
 
 GitHub Actions builds the installer and attaches it to a new [Release](https://github.com/robneville73/robs-wind-sim/releases). Check the **Actions** tab if a release does not appear within a few minutes.
@@ -113,26 +126,45 @@ GitHub Actions builds the installer and attaches it to a new [Release](https://g
 
 Default global hotkeys: **F9** (master toggle), **F10** (idle up), **F11** (idle down). Rebind in Settings.
 
-## Phase 1 Testing
+## Testing
 
-1. Flash the Arduino sketch.
-2. Launch `RobsWindSim.exe` (or `dotnet run`).
-3. Open **Settings**, select the Arduino COM port, click **Refresh** if needed.
-4. Confirm **Arduino: Connected** when the port is correct.
-5. Enable **Test Mode**, move the speed slider — fans should track mapped output.
-6. Click **Run test sweep** — speed ramps 0 → max → 0 over ~25 seconds.
-7. Toggle **Master On/Off** (tray menu or F9) — fans stop regardless of slider.
-8. Unplug USB — status shows disconnected; replug and it retries automatically.
-9. Adjust per-channel enable, max power, and sync toggles to verify independent control.
+### Live iRacing mode (default)
 
-**Note:** At speed 0 (live or test mode), the configured **idle fan speed** (default 17%) is applied instead of full stop. Set idle to 0% if you want silence at zero speed during testing.
+1. Confirm `irsdkEnableMem=1` in iRacing `app.ini`.
+2. Flash the Arduino sketch and connect USB.
+3. Launch `RobsWindSim.exe` (or `dotnet run`).
+4. Open **Settings**, select the Arduino COM port, click **Refresh** if needed.
+5. Confirm **Arduino: Connected** when the port is correct.
+6. Start iRacing and enter a live session (test drive or practice).
+7. Confirm **iRacing: Connected — X mph** updates in Settings.
+8. Drive — fans should track speed via the configured mapping curve.
+9. Stop in pits at 0 mph — idle fan speed applies (default 17%).
+10. Exit iRacing — fans return to idle speed (same as speed 0 in pits).
+11. Toggle **Test Mode** on — manual slider takes over immediately.
 
-## Architecture (phase 2 ready)
+**Replay mode:** On the **Fans** tab, enable **Replay mode** to drive fans from replay telemetry. Off by default — replays hold idle speed only.
 
-Speed input is abstracted via `ISpeedSource`. Phase 1 uses `ManualTestSpeedSource`; `IracingSpeedSource` is a stub. A single `FanOutputPipeline` maps speed → fan percentage regardless of source, so iRacing can be added without changing the PWM path.
+### Manual test mode
 
-## Out of Scope (phase 1)
+1. Open **Settings** → **Test Mode** tab.
+2. Enable **Use manual test speed instead of iRacing**.
+3. Move the speed slider — fans should track mapped output.
+4. Click **Run test sweep** — speed ramps 0 → max → 0 over ~25 seconds.
+5. Toggle **Master On/Off** (tray menu or F9) — fans stop regardless of slider.
+6. Unplug USB — status shows disconnected; replug and it retries automatically.
 
-- iRacing SDK / live telemetry
+**Note:** At speed 0 (live session, iRacing not running, or test mode), the configured **idle fan speed** (default 17%) is applied instead of full stop. Set idle to 0% if you want silence at zero speed.
+
+## Architecture
+
+Speed input is abstracted via `ISpeedSource`. Live mode uses `IracingSpeedSource` (IRSDKSharper); test mode uses `ManualTestSpeedSource`. A single `FanOutputPipeline` maps speed → fan percentage regardless of source.
+
+## Out of Scope
+
 - Fan tach/RPM reading (D2/D3 reserved)
+- Left/right differential cornering effects
 - SimHub dependency
+
+## Third-Party Licenses
+
+- [IRSDKSharper](https://github.com/mherbold/IRSDKSharper) — GPL-3.0
