@@ -64,10 +64,18 @@ public sealed class AppSettings
 
     [JsonIgnore]
     public static string SettingsPath =>
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "WindSim",
+            "settings.json");
+
+    private static string LegacySettingsPath =>
         Path.Combine(AppContext.BaseDirectory, "settings.json");
 
     public static AppSettings Load()
     {
+        MigrateLegacySettingsIfNeeded();
+
         AppSettings settings;
         var isNewInstall = !File.Exists(SettingsPath);
 
@@ -96,7 +104,24 @@ public sealed class AppSettings
     {
         SchemaVersion = CurrentSchemaVersion;
         var json = JsonSerializer.Serialize(this, JsonOptions());
+        Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
         File.WriteAllText(SettingsPath, json);
+    }
+
+    private static void MigrateLegacySettingsIfNeeded()
+    {
+        if (File.Exists(SettingsPath) || !File.Exists(LegacySettingsPath))
+            return;
+
+        try
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(SettingsPath)!);
+            File.Copy(LegacySettingsPath, SettingsPath);
+        }
+        catch
+        {
+            // Fall back to defaults if migration fails.
+        }
     }
 
     private static AppSettings CreateDefaults() => new()

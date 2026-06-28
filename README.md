@@ -69,7 +69,39 @@ dotnet publish src/WindSim/WindSim.csproj -p:PublishProfile=win-x64
 
 Output: `src/WindSim/bin/Release/net10.0-windows/win-x64/publish/WindSim.exe` (single self-contained file).
 
-Settings are saved to `settings.json` beside the executable.
+Settings are saved to `%LocalAppData%\WindSim\settings.json`. If you previously ran a portable copy with `settings.json` beside the exe, settings are migrated automatically on first launch.
+
+### Install (end users)
+
+Download **WindSim-Setup-x.y.z.exe** from [GitHub Releases](https://github.com/robneville73/robs-wind-sim/releases), run the installer, and launch **Wind Sim Controller** from the Start Menu.
+
+Windows may show a SmartScreen warning because the installer is not code-signed. Choose **More info** → **Run anyway** to proceed.
+
+### Build installer (developers)
+
+Prerequisites:
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- [Inno Setup 6](https://jrsoftware.org/isinfo.php) (`winget install JRSoftware.InnoSetup`)
+
+```bash
+scripts\build-installer.cmd
+```
+
+Output: `artifacts\WindSim-Setup-{version}.exe` (version read from `src/WindSim/WindSim.csproj`).
+
+### Releasing
+
+1. Bump `<Version>` in [src/WindSim/WindSim.csproj](src/WindSim/WindSim.csproj).
+2. Commit and push to `main`.
+3. Tag and push:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+GitHub Actions builds the installer and attaches it to a new [Release](https://github.com/robneville73/robs-wind-sim/releases).
 
 ### Tray behavior
 
