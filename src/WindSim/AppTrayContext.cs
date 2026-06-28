@@ -70,7 +70,7 @@ public sealed class AppTrayContext : ApplicationContext
 
         _notifyIcon = new NotifyIcon
         {
-            Text = "Wind Sim",
+            Text = "Robs Wind Sim",
             ContextMenuStrip = _trayMenu,
             Icon = TrayIconFactory.Create(TrayConnectionState.Disconnected),
             Visible = true
@@ -181,7 +181,7 @@ public sealed class AppTrayContext : ApplicationContext
             TrayIconFactory.DisposeIcon(oldIcon);
         }
 
-        var tooltip = $"Wind Sim L:{_lastOutput.LeftPercent:F0}% R:{_lastOutput.RightPercent:F0}%";
+        var tooltip = $"Robs Wind Sim L:{_lastOutput.LeftPercent:F0}% R:{_lastOutput.RightPercent:F0}%";
         if (tooltip.Length > 63)
             tooltip = tooltip[..63];
         _notifyIcon.Text = tooltip;

@@ -41,5 +41,5 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/WindSim-Setup-*.exe
+          files: artifacts/RobsWindSim-Setup-*.exe
           generate_release_notes: true

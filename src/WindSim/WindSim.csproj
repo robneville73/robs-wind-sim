@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>WindSim</RootNamespace>
     <AssemblyName>WindSim</AssemblyName>
+    <Product>Robs Wind Sim</Product>
+    <AssemblyTitle>Robs Wind Sim</AssemblyTitle>
     <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>

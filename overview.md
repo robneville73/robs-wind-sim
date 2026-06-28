@@ -1,4 +1,4 @@
-# Wind Sim Controller — Project Spec
+# Robs Wind Sim — Project Spec
 
 ## Overview
 

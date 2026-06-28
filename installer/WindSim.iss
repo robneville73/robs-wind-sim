@@ -6,7 +6,7 @@
   #define PublishDir "..\src\WindSim\bin\Release\net10.0-windows\win-x64\publish"
 #endif
 
-#define MyAppName "Wind Sim Controller"
+#define MyAppName "Robs Wind Sim"
 #define MyAppExeName "WindSim.exe"
 #define MyAppPublisher "Rob Neville"
 
@@ -15,11 +15,11 @@ AppId={{A3F8C2E1-9B4D-4A7E-8F1C-2D6E5A9B0C3D}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\WindSim
+DefaultDirName={autopf}\Robs Wind Sim
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=..\artifacts
-OutputBaseFilename=WindSim-Setup-{#MyAppVersion}
+OutputBaseFilename=RobsWindSim-Setup-{#MyAppVersion}
 Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern

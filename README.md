@@ -1,4 +1,4 @@
-# Wind Sim Controller
+# Robs Wind Sim
 
 Windows tray application that drives two PWM fan channels on an Arduino Nano for a DIY sim racing wind simulator. Phase 1 provides manual test mode and serial control; iRacing telemetry integration is planned for phase 2.
 
@@ -73,7 +73,7 @@ Settings are saved to `%LocalAppData%\WindSim\settings.json`. If you previously 
 
 ### Install (end users)
 
-Download **WindSim-Setup-x.y.z.exe** from [GitHub Releases](https://github.com/robneville73/robs-wind-sim/releases), run the installer, and launch **Wind Sim Controller** from the Start Menu.
+Download **RobsWindSim-Setup-x.y.z.exe** from [GitHub Releases](https://github.com/robneville73/robs-wind-sim/releases), run the installer, and launch **Robs Wind Sim** from the Start Menu.
 
 Windows may show a SmartScreen warning because the installer is not code-signed. Choose **More info** → **Run anyway** to proceed.
 
@@ -88,7 +88,7 @@ Prerequisites:
 scripts\build-installer.cmd
 ```
 
-Output: `artifacts\WindSim-Setup-{version}.exe` (version read from `src/WindSim/WindSim.csproj`).
+Output: `artifacts\RobsWindSim-Setup-{version}.exe` (version read from `src/WindSim/WindSim.csproj`).
 
 ### Releasing
 

@@ -161,7 +161,7 @@ public sealed class SettingsForm : Form
 
     private void InitializeComponent()
     {
-        Text = "Wind Sim Settings";
+        Text = "Robs Wind Sim Settings";
         ClientSize = new Size(520, 580);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
